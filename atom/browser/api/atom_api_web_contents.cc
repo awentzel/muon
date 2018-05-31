@@ -525,8 +525,10 @@ void WebContents::CreateWebContents(v8::Isolate* isolate,
     type_ = WEB_VIEW;
   }
 
-  content::WebContents* web_contents = content::WebContents::Create(params);
-  CompleteInit(isolate, web_contents, options);
+  std::unique_ptr<content::WebContents> web_contents =
+      content::WebContents::Create(params);
+  CompleteInit(isolate, web_contents.get(), options);
+  web_contents.release();
 }
 
 void WebContents::CompleteInit(v8::Isolate* isolate,
@@ -745,12 +747,13 @@ void WebContents::WebContentsCreated(
   }
 }
 
-void WebContents::AddNewContents(content::WebContents* source,
-                    content::WebContents* new_contents,
-                    WindowOpenDisposition disposition,
-                    const gfx::Rect& initial_rect,
-                    bool user_gesture,
-                    bool* was_blocked) {
+void WebContents::AddNewContents(
+    content::WebContents* source,
+    std::unique_ptr<content::WebContents> new_contents,
+    WindowOpenDisposition disposition,
+    const gfx::Rect& initial_rect,
+    bool user_gesture,
+    bool* was_blocked) {
   if (brave::api::Extension::IsBackgroundPageWebContents(source)) {
     user_gesture = true;
   }
@@ -758,7 +761,7 @@ void WebContents::AddNewContents(content::WebContents* source,
   bool active = disposition != WindowOpenDisposition::NEW_BACKGROUND_TAB;
 
   ::Browser* browser = nullptr;
-  auto tab_helper = extensions::TabHelper::FromWebContents(new_contents);
+  auto tab_helper = extensions::TabHelper::FromWebContents(new_contents.get());
   if (tab_helper) {
     tab_helper->SetActive(active);
 
@@ -793,7 +796,7 @@ void WebContents::AddNewContents(content::WebContents* source,
                     "add-new-contents",
                     event,
                     source,
-                    new_contents,
+                    new_contents.get(),
                     disposition,
                     initial_rect,
                     user_gesture);
@@ -807,14 +810,17 @@ void WebContents::AddNewContents(content::WebContents* source,
   }
 
   if (was_blocked && *was_blocked) {
-    auto guest = brave::TabViewGuest::FromWebContents(new_contents);
+    auto guest = brave::TabViewGuest::FromWebContents(new_contents.get());
     if (guest) {
       guest->Destroy(true);
     } else {
-      delete new_contents;
+      new_contents.reset();
     }
-  } else if (browser) {
-    tab_helper->SetBrowser(browser);
+  } else {
+    new_contents.release();
+    if (browser) {
+      tab_helper->SetBrowser(browser);
+    }
   }
 }
 
@@ -929,12 +935,9 @@ content::WebContents* WebContents::OpenURLFromTab(
 
     if (background_contents) {
       bool was_blocked = false;
-      AddNewContents(source,
-                      background_contents,
-                      params.disposition,
-                      gfx::Rect(),
-                      params.user_gesture,
-                      &was_blocked);
+      AddNewContents(source, base::WrapUnique(background_contents),
+                     params.disposition, gfx::Rect(), params.user_gesture,
+                     &was_blocked);
       if (!was_blocked)
         return background_contents;
     }
@@ -2916,14 +2919,10 @@ void WebContents::OnTabCreated(const mate::Dictionary& options,
   }
 
   bool was_blocked = false;
-  AddNewContents(source,
-                    tab,
-                    active ?
-                      WindowOpenDisposition::NEW_FOREGROUND_TAB :
-                      WindowOpenDisposition::NEW_BACKGROUND_TAB,
-                    gfx::Rect(),
-                    user_gesture,
-                    &was_blocked);
+  AddNewContents(source, base::WrapUnique(tab),
+                 active ? WindowOpenDisposition::NEW_FOREGROUND_TAB
+                        : WindowOpenDisposition::NEW_BACKGROUND_TAB,
+                 gfx::Rect(), user_gesture, &was_blocked);
 
   if (was_blocked)
     callback.Run(nullptr);
