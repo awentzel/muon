@@ -100,8 +100,9 @@ class BraveBrowserContext : public Profile {
   sync_preferences::PrefServiceSyncable* user_prefs() const {
     return user_prefs_.get(); }
 
-  sync_preferences::PrefServiceSyncable* GetPrefs() {
-    return user_prefs_.get(); }
+  sync_preferences::PrefServiceSyncable* GetPrefs() override {
+    return user_prefs_.get();
+  }
 
   const sync_preferences::PrefServiceSyncable* GetPrefs() const override {
     return static_cast<const Profile*>(this)->GetPrefs();
