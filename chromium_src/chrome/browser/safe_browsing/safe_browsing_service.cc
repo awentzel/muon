@@ -16,6 +16,4 @@ SafeBrowsingService::ui_manager() const {
   return empty;
 }
 
-void SafeBrowsingService::DisableQuicOnIOThread() {}
-
 }  // namespace safe_browsing
