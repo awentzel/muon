@@ -97,7 +97,7 @@ bool DownloadPathIsDangerous(const base::FilePath& download_path) {
   }
 #endif
   base::FilePath desktop_dir;
-  if (!PathService::Get(base::DIR_USER_DESKTOP, &desktop_dir)) {
+  if (!base::PathService::Get(base::DIR_USER_DESKTOP, &desktop_dir)) {
     NOTREACHED();
     return false;
   }
@@ -169,14 +169,15 @@ void ShowDialog(const file_dialog::DialogSettings& settings,
 
   base::FilePath default_path = settings.default_path;
   if (default_path.empty()) {
-    if (!PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS, &default_path)) {
+    if (!base::PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS, &default_path)) {
       NOTREACHED();
     }
   }
   if (DownloadPathIsDangerous(default_path)) {
     // This is only useful on platforms that support
     // DIR_DEFAULT_DOWNLOADS_SAFE.
-    if (!PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS_SAFE, &default_path)) {
+    if (!base::PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS_SAFE,
+                                &default_path)) {
       NOTREACHED();
     }
   }

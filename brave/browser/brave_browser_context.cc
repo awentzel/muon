@@ -449,7 +449,7 @@ void BraveBrowserContext::CreateProfilePrefs(
     user_prefs::UserPrefs::Set(this, user_prefs_.get());
   } else {
     base::FilePath download_dir;
-    PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS, &download_dir);
+    base::PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS, &download_dir);
     pref_registry_->RegisterFilePathPref(prefs::kDownloadDefaultDirectory,
                                         download_dir);
     pref_registry_->RegisterDictionaryPref("app_state");
@@ -682,7 +682,7 @@ AtomBrowserContext* AtomBrowserContext::From(
   // TODO(bridiver) - pass the path to initialize the browser context
   // TODO(bridiver) - create these with the profile manager
   base::FilePath path;
-  PathService::Get(chrome::DIR_USER_DATA, &path);
+  base::PathService::Get(chrome::DIR_USER_DATA, &path);
   if (!in_memory && !partition.empty())
     path = path.Append(FILE_PATH_LITERAL("Partitions"))
                  .Append(base::FilePath::FromUTF8Unsafe(
