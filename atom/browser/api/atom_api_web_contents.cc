@@ -2326,7 +2326,7 @@ bool WebContents::SendIPCSharedMemory(int render_process_id,
   if (!memory_handle.IsValid() || !rfh)
     return false;
 
-  base::ProcessHandle handle = rfh->GetProcess()->GetHandle();
+  base::ProcessHandle handle = rfh->GetProcess()->GetProcess().Handle();
   if (!handle) {
     return false;
   }
