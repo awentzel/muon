@@ -257,6 +257,8 @@ source_set("browser") {
     "//chrome/browser/prefs/chrome_command_line_pref_store.cc",
     "//chrome/browser/prefs/chrome_command_line_pref_store.h",
 
+    "chrome/browser/signin/signin_manager_factory.cc",
+    "//chrome/browser/signin/signin_manager_factory.h",
     "//chrome/browser/ssl/ssl_config_service_manager.h",
     "//chrome/browser/ssl/ssl_config_service_manager_pref.cc",
     "//chrome/browser/site_details.cc",
@@ -1097,6 +1099,8 @@ source_set("tab_manager") {
     "//chrome/browser/resource_coordinator/lifecycle_unit_source_base.h",
     "//chrome/browser/resource_coordinator/page_signal_receiver.cc",
     "//chrome/browser/resource_coordinator/page_signal_receiver.h",
+    "//chrome/browser/resource_coordinator/tab_activity_watcher.cc",
+    "//chrome/browser/resource_coordinator/tab_activity_watcher.h",
     "//chrome/browser/resource_coordinator/tab_helper.cc",
     "//chrome/browser/resource_coordinator/tab_helper.h",
     "//chrome/browser/resource_coordinator/tab_lifecycle_observer.h",
@@ -1118,6 +1122,8 @@ source_set("tab_manager") {
     "//chrome/browser/resource_coordinator/tab_manager_stats_collector.h",
     "//chrome/browser/resource_coordinator/tab_manager_web_contents_data.cc",
     "//chrome/browser/resource_coordinator/tab_manager_web_contents_data.h",
+    "//chrome/browser/resource_coordinator/tab_metrics_logger.cc",
+    "//chrome/browser/resource_coordinator/tab_metrics_logger.h",
     "//chrome/browser/resource_coordinator/time.cc",
     "//chrome/browser/resource_coordinator/time.h",
     "//chrome/browser/memory_details.cc",
@@ -1131,6 +1137,7 @@ source_set("tab_manager") {
     "//chrome/browser/ui/tab_contents/core_tab_helper.h",
     "//chrome/browser/ui/tabs/tab_strip_model.cc",
     "//chrome/browser/ui/tabs/tab_strip_model.h",
+    "//chrome/browser/ui/tabs/tab_strip_model_delegate.cc",
     "//chrome/browser/ui/tabs/tab_strip_model_delegate.h",
     "//chrome/browser/ui/tabs/tab_strip_model_observer.cc",
     "//chrome/browser/ui/tabs/tab_strip_model_observer.h",
@@ -1138,6 +1145,8 @@ source_set("tab_manager") {
     "//chrome/browser/ui/tabs/tab_strip_model_order_controller.h",
     "chrome/browser/ui/tabs/tab_utils.cc",
     "//chrome/browser/ui/tabs/tab_utils.h",
+    "//chrome/browser/ui/tabs/window_activity_watcher.cc",
+    "//chrome/browser/ui/tabs/window_activity_watcher.h",
     "//chrome/browser/ui/tab_contents/tab_contents_iterator.cc",
     "//chrome/browser/ui/tab_contents/tab_contents_iterator.h",
     "//chrome/browser/ui/tab_ui_helper.cc",
@@ -1146,6 +1155,8 @@ source_set("tab_manager") {
 
   deps = [
     ":lifetime",
+    "//chrome/browser/resource_coordinator:tab_metrics_event_proto",
+    "//chrome/browser/resource_coordinator/tab_ranker",
     "//components/feature_engagement:buildflags",
     "//services/metrics",
   ]
