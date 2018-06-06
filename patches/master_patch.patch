@@ -1777,7 +1777,7 @@ index cb4a7414da8542af079dff51be69c5a837f0f4d4..2371bab4b987edfa682fed920aebd25f
        "//device/bluetooth",
        "//device/usb",
 diff --git a/extensions/common/api/_api_features.json b/extensions/common/api/_api_features.json
-index 702788438797608165c3ee7c5f8ac1d5574d2698..718445ad38a6d74d20ca5ef50da693c9ff8cbb32 100644
+index 702788438797608165c3ee7c5f8ac1d5574d2698..53c818bd8900e35f9b7a2f9a5ba175adce536c31 100644
 --- a/extensions/common/api/_api_features.json
 +++ b/extensions/common/api/_api_features.json
 @@ -193,7 +193,10 @@
@@ -1800,7 +1800,15 @@ index 702788438797608165c3ee7c5f8ac1d5574d2698..718445ad38a6d74d20ca5ef50da693c9
        "chrome://chrome-signin/*",
        "chrome://home/*",
        "chrome://media-router/*",
-@@ -585,6 +589,14 @@
+@@ -578,6 +582,7 @@
+     "channel": "stable",
+     "contexts": ["webui"],
+     "matches": [
++      "chrome://brave/*",
+       "chrome://chrome-signin/*",
+       "chrome://home/*",
+       "chrome://media-router/*",
+@@ -585,6 +590,14 @@
        "chrome://oobe/*",
        "chrome://assistant-optin/*"
      ]
@@ -1815,7 +1823,7 @@ index 702788438797608165c3ee7c5f8ac1d5574d2698..718445ad38a6d74d20ca5ef50da693c9
    }],
    "webViewRequest": [{
      "dependencies": ["permission:webview"],
-@@ -593,6 +605,7 @@
+@@ -593,6 +606,7 @@
      "channel": "stable",
      "contexts": ["webui"],
      "matches": [
@@ -1879,6 +1887,18 @@ index ef5550e92a254176efb86ee8e598664f9897a194..61a0553011ff747ed9091f2c53f59969
    return switches::autoplay::kUserGestureRequiredPolicy;
  #else
    return switches::autoplay::kNoUserGestureRequiredPolicy;
+diff --git a/mojo/public/cpp/platform/named_platform_channel_win.cc b/mojo/public/cpp/platform/named_platform_channel_win.cc
+index 0507efe5abb5193f653a7631b5025cb9358c23f0..9c329bd6d81baa962f16f32e226f0221f712e7c1 100644
+--- a/mojo/public/cpp/platform/named_platform_channel_win.cc
++++ b/mojo/public/cpp/platform/named_platform_channel_win.cc
+@@ -5,6 +5,7 @@
+ #include "mojo/public/cpp/platform/named_platform_channel.h"
+ 
+ #include <windows.h>
++#include <memory>
+ 
+ // NOTE: This needs to be included *after* windows.h.
+ #include <sddl.h>
 diff --git a/net/http/BUILD.gn b/net/http/BUILD.gn
 index d00da41da1d8bbc40d8a85d582c1966ed22eaaf1..6a3b54e91eafb8f187989c9c954be0008343aa63 100644
 --- a/net/http/BUILD.gn
